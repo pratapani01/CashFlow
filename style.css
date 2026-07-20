@@ -387,10 +387,37 @@ select:disabled{
     transform:scale(1.08);
 }
 
-#warning{
-    margin-top:15px;
-    color:#dc2626;
-    font-weight:bold;
+.low-balance-banner{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:10px;
+    background:linear-gradient(135deg, #dc2626, #b91c1c);
+    color:#fff;
+    font-weight:600;
+    font-size:14px;
+    padding:12px 20px;
+    text-align:center;
+    box-shadow:0 4px 12px rgba(0,0,0,.15);
+    animation:bannerDrop .35s ease;
+}
+
+.low-balance-banner .banner-icon{
+    font-size:16px;
+}
+
+@keyframes bannerDrop{
+    from{ opacity:0; transform:translateY(-100%); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+@media(max-width:640px){
+
+    .low-balance-banner{
+        font-size:13px;
+        padding:10px 14px;
+    }
+
 }
 
 @media(max-width:640px){

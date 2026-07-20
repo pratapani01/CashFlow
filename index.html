@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CashFlow</title>
+    <title>CashFlow Dashboard</title>
     <link rel="icon" type="image/x-icon" href="assets/logo.ico">
 
     <link rel="stylesheet" href="style.css">
@@ -75,7 +75,7 @@
                 </div>
 
                 <button id="themeBtn" class="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false">
-                    <span class="theme-icon">☀️</span>
+                    <span class="theme-icon">🌞</span>
                     <span class="toggle-thumb"></span>
                     <span class="theme-icon">🌙</span>
                 </button>
@@ -84,6 +84,12 @@
 
         </div>
     </header>
+
+    <!-- Low Balance Warning Banner -->
+    <div id="lowBalanceBanner" class="low-balance-banner hidden" role="alert">
+        <span class="banner-icon">⚠️</span>
+        <span id="lowBalanceBannerText"></span>
+    </div>
 
     <main class="container">
 
@@ -110,8 +116,6 @@
                 </div>
 
             </div>
-
-            <div id="warning" role="alert"></div>
 
         </section>
 
