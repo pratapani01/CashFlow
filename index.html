@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CashFlow Dashboard</title>
+
+    <link rel="stylesheet" href="style.css">
+
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <!-- jsPDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <!-- jsPDF AutoTable (for structured report tables) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.25/jspdf.plugin.autotable.min.js"></script>
+</head>
+<body>
+
+    <!-- Welcome Modal -->
+    <div id="welcomeModal" class="modal">
+        <div class="modal-box">
+            <h2>👋 Welcome</h2>
+            <p>Please enter your name</p>
+
+            <input
+                type="text"
+                id="userNameInput"
+                placeholder="Enter your name"
+                aria-label="Your name"
+            >
+
+            <button id="saveNameBtn">
+                Continue
+            </button>
+        </div>
+    </div>
+
+    <header class="header" id="siteHeader">
+        <div class="header-inner">
+
+            <div class="brand">
+                <img src="assets/logo.png" alt="CashFlow Logo" class="brand-logo">
+                <span class="brand-title">CashFlow</span>
+            </div>
+
+            <div class="header-right">
+
+                <select id="currency" class="currency-select" aria-label="Display currency">
+                    <option value="INR">₹ INR</option>
+                    <option value="USD">$ USD</option>
+                    <option value="EUR">€ EUR</option>
+                    <option value="GBP">£ GBP</option>
+                </select>
+
+                <div class="header-datetime">
+                    <span id="currentDate"></span>
+                    <span id="liveClock"></span>
+                </div>
+
+                <div class="profile">
+
+                    <div class="avatar" id="avatar"></div>
+
+                    <div class="profile-text">
+
+                        <h4 id="profileName"></h4>
+
+                        <small id="greeting"></small>
+
+                    </div>
+
+                </div>
+
+                <button id="themeBtn" class="theme-toggle" aria-label="Toggle dark mode" aria-pressed="false">
+                    <span class="theme-icon">☀️</span>
+                    <span class="toggle-thumb"></span>
+                    <span class="theme-icon">🌙</span>
+                </button>
+
+            </div>
+
+        </div>
+    </header>
+
+    <main class="container">
+
+        <!-- Summary strip -->
+        <section class="card stats-card">
+
+            <h2>Summary</h2>
+
+            <div class="stats-row">
+
+                <div class="summary-card">
+                    <h3>Total Salary</h3>
+                    <p id="salaryDisplay">₹0</p>
+                </div>
+
+                <div class="summary-card">
+                    <h3>Total Expenses</h3>
+                    <p id="expenseDisplay">₹0</p>
+                </div>
+
+                <div class="summary-card">
+                    <h3>Remaining Balance</h3>
+                    <p id="balanceDisplay">₹0</p>
+                </div>
+
+            </div>
+
+            <div id="warning" role="alert"></div>
+
+        </section>
+
+        <!-- Two column dashboard body -->
+        <div class="dashboard-grid">
+
+            <div class="col-main">
+
+                <!-- Add Details -->
+                <section class="card">
+
+                    <h2>Add Details</h2>
+
+                    <div class="subsection">
+
+                        <h3 class="subsection-title">💰 Add Monthly Salary</h3>
+
+                        <form id="salaryForm" class="inline-form">
+
+                            <input
+                                type="number"
+                                id="salaryAmount"
+                                placeholder="Salary Amount"
+                                min="0"
+                                step="0.01"
+                                aria-label="Salary amount"
+                            >
+
+                            <button type="submit">
+                                + Add Salary
+                            </button>
+
+                        </form>
+
+                        <p class="hint" id="currentMonthLabel"></p>
+                        <p class="field-error" id="salaryError"></p>
+
+                    </div>
+
+                    <div class="subsection">
+
+                        <h3 class="subsection-title">🧾 Add Expense</h3>
+
+                        <form id="expenseForm" class="inline-form">
+
+                            <input
+                                type="text"
+                                id="expenseName"
+                                placeholder="Expense Name"
+                                aria-label="Expense name"
+                            >
+
+                            <input
+                                type="number"
+                                id="expenseAmount"
+                                placeholder="Expense Amount"
+                                min="0"
+                                step="0.01"
+                                aria-label="Expense amount"
+                            >
+
+                            <button type="submit">
+                                + Add Expense
+                            </button>
+
+                        </form>
+
+                        <p class="field-error" id="expenseError"></p>
+
+                    </div>
+
+                </section>
+
+                <!-- Salary History -->
+                <section class="card">
+
+                    <h2>📅 Salary History</h2>
+
+                    <ul id="salaryHistoryList"></ul>
+
+                    <p id="salaryEmptyState" class="empty-state hidden">
+                        No salary added yet. Add your first salary above 👆
+                    </p>
+
+                </section>
+
+                <!-- Expense List -->
+                <section class="card">
+
+                    <h2>Expenses</h2>
+
+                    <input
+                        type="text"
+                        id="search"
+                        placeholder="Search Expense..."
+                        aria-label="Search expenses"
+                    >
+                    <p id="expenseCount"></p>
+
+                    <ul id="expenseList"></ul>
+
+                    <p id="expenseEmptyState" class="empty-state hidden">
+                        No expenses yet. Add one above to get started 👆
+                    </p>
+
+                </section>
+
+            </div>
+
+            <div class="col-side">
+
+                <section class="card">
+
+                    <h2>💡 Financial Tip</h2>
+
+                    <p id="financialTip"></p>
+
+                </section>
+
+                <!-- Chart -->
+                <section class="card">
+
+                    <h2>Expense Overview</h2>
+
+                    <canvas id="expenseChart"></canvas>
+
+                    <p id="chartEmptyState" class="empty-state hidden">
+                        Add a salary or expense to see your chart.
+                    </p>
+
+                </section>
+
+            </div>
+
+        </div>
+
+        <!-- Actions -->
+        <section class="card actions-card">
+
+            <button id="downloadPdf">
+                ⬇ Download Report
+            </button>
+            <button id="clearData" class="danger-btn">
+                🗑 Clear All Data
+            </button>
+
+        </section>
+
+    </main>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
